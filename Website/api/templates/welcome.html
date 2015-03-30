@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% include "navbar.html" %}
+{% block content %}
+
+<!--<p>Welcome, {{ username }}! <a href="{{ url_for('logout')}}">logout</a></p>-->
+
+      <!-- Static navbar -->
+
+                    <center>
+                      <div class="jumbotron">
+                        <h1>Getting Started</h1>
+                        <p>There are two great ways to get your wikistats data:</p>
+                        <p>
+                          <a class="btn btn-lg btn-primary" href="" role="button">Gui Interactivity &raquo;</a>
+                        </p>
+                        <p>
+                          <a class="btn btn-lg btn-primary" href="{{ url_for('apiaccess')}}" role="button">&laquo; Use the API</a>
+                        </p>
+                      </div>
+                    </center>
+
+
+      <!-- Ain't got no thang to show -->
+
+
+</center>
+{% endblock %}

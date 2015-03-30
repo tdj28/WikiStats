@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block head %}
+{{ super() }}
+       
+{% endblock %}
+
+{% block content %}
+<center>
+    <div class="row">
+         <div class="navbar-collapse collapse" id="navbar-main">
+        <form class="navbar-form navbar-right" action="{{ url_for('login') }}" method="POST">
+            {% if error %}
+                <p style="color:red;">
+                    {{ error }}
+                </p>
+            {% endif %}
+                    <div class="form-group">
+                        <input type="text" id="userName" class="form-control input-sm chat-input" placeholder="username" name="username" required autofocus/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="userPassword" class="form-control input-sm chat-input" placeholder="password" name="password" required/>
+                    </div>
+                    <button type="Submit" class="btn btn-primary btn-md">Login</button><i class="fa fa-sign-in"></i></a>
+                    
+        </form>
+        </div>
+    </div>
+    
+    
+    <div class="row"></div>
+    <div class="wikipagecountsbanner">
+    <div id="wikipediapagecountsexplorer_hype_container" style="margin:auto;position:relative;width:1000px;height:340px;overflow:hidden;" aria-live="polite">
+        <script type="text/javascript" charset="utf-8" src="static/wikipedia_pagecounts_explorer.hyperesources/wikipediapagecountsexplorer_hype_generated_script.js?1939"></script>
+    </div>
+    </div>
+    </div>
+    
+    <div class="row">
+                             <center>
+                      <div class="jumbotron">
+                        <h1>Wikistats Explorer</h1>
+                        <p>2008 was a fascinating year, explore it in wikipedia statistics using a gui interface or api access:</p>
+                        <p>
+                          <a class="btn btn-lg btn-primary" href="" role="button">Sign up &raquo;</a>
+                        </p>
+                      </div>
+                    </center>
+                
+    </div>
+<center>
+{% endblock %}

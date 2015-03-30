@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% include "navbar.html" %}
+{% block content %}
+
+<center>
+<div class="jumbotron">
+
+ {% if listed_data %}
+  <h1>Terminating instance {{ instance }}</h1>
+   <center>
+     <div class="container">
+     <table class="table">
+       <thead>
+       <tr>
+         <th>Instance name</th>
+         <th>Instance id</th>
+         <th>Launch date</th>
+         <th>State</th>
+         <th>Public IP</th>
+         <th>Private IP</th>
+         <th>Branch Tag</th>
+         <th>Action</th>
+       </tr>
+       </thead>
+        {% include "create_table.html" %}
+     </table>
+     </div>
+  </center>
+      <p>There is no reversing the momentous action you are about to take.</p>
+      <p>
+        <a class="btn btn-lg btn-primary" href="{{ url_for('welcome')}}" role="button">Nevermind &raquo;</a>
+     </p>
+      <p>
+        <a class="btn btn-lg btn-secondary" href="{{ url_for('.confirmed_terminate', instance = instance )}}" role="button">Do it &raquo;</a>
+      </p>
+
+ {% else %}
+   <h1>That's not yours, I refuse to do anything to it.</h1>
+   <p>
+        <a class="btn btn-lg btn-primary" href="{{ url_for('welcome')}}" role="button">Go back &raquo;</a>
+   </p>
+ {% endif %}
+</div>
+</center>
+
+{% endblock %}

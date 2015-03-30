@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% include "navbar.html" %}
+{% block content %}
+
+<!--<p>Welcome, {{ username }}! <a href="{{ url_for('logout')}}">logout</a></p>-->
+
+      <!-- Static navbar -->
+
+                    <center>
+                      <div class="jumbotron">
+                        <h1>API Access</h1>
+                        <p>Your API key is 9s2xX3RgH7jcHf</p>
+                        <p>
+                          In order to gather data from the API, you will need to POST your API token in 
+                          your header call. The most basic call would be:</p>
+                          <pre> curl -X POST -H 'X-Authentication-Token: 9s2xX3RgH7jcHf' localhost:8080/hits/</pre>
+                          <p>Returns:</p>
+                          <pre>
+{"count": "1","token": "an-auth-token-hit"}
+                          </pre>
+                          <p>This will return the number of times the API has been accessed and an authorization token. </p>
+                          <br><br>
+                          <p>
+                          To get monthly counts for a given search term, you need to provide the query term and the month
+                          in the following format:</p>
+                          <pre> curl -X POST -H 'X-Authentication-Token: 9s2xX3RgH7jcHf, Search: Obama, Month: 08' localhost:8080/hits/</pre>
+                          <p>This will return the number of page hits that a wikipedia entry related to the search term Obama
+                          saw in the entire month of October:</p>
+                          <pre>
+{ "barack_obama": "325,671", "barack_obama_sr": "6,942" }
+                          </pre>
+                          <br><br>
+                          <p>If you wish to refresh your API key, revoking the old one, click below:</p>
+                        <p>
+                          <a class="btn btn-lg btn-primary" href="{{ url_for('apiaccess')}}" role="button">Generate New Key</a>
+                        </p>
+                      </div>
+                    </center>
+
+
+      <!-- Ain't got no thang to show -->
+
+
+</center>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% for list in listed_data %}
+
+    <tr class="success">
+      <td>{{list.tags['Name']}}</td>
+      <td><a href="https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:search={{list.id}};sort=launchTime">{{list.id}}</a></td>
+      <td>{{list.launch_time}}</td>
+      <td>{{list.state}}</td>
+      <td>{{list.ip_address}}</td>
+      <td>{{list.private_ip_address}}</td>
+      <td>{{list.tags['Branch']}}</td>
+      <td>
+         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+        <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Actions <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="https://{{list.ip_address}}" target="_blank">Dashboard</a></li>
+                <li><a href="" target="_blank">SSH</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header"></li>
+                <li><a href="{{ url_for('.terminate_one', instance=list.id) }}">Terminate</a></li>
+            </ul>
+        </li>
+      </div>
+       </td>
+    </tr>
+
+
+{% endfor %}

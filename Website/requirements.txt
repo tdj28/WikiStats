@@ -1,0 +1,6 @@
+flask
+redis
+nose
+mock
+flask-mysql
+logging

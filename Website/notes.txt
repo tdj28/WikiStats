@@ -1,0 +1,24 @@
+# Get puts full information in URL ?post=3&username=user&password=passwd
+# Post is better as it is passed in post payload part of request, not in URL
+
+create database wikistats;
+
+use wikistats;
+CREATE USER 'wikiview'@'localhost' IDENTIFIED BY '%jswP^YkqV#rne';
+GRANT ALL PRIVILEGES ON wikistats.* to 'wikiview'@'localhost';
+CREATE TABLE user( user_id INT NOT NULL AUTO_INCREMENT, username VARCHAR(64) NOT NULL, password VARCHAR(64) NOT NULL, primary key(user_id));
+INSERT INTO user VALUES('', 'demo', 'demopass');
+FLUSH PRIVILEGES;
+
+
+curl -X POST -H 'X-Authentication-Token: an-auth-token' localhost:8080/auth/
+{
+  "token": "an-auth-token"
+}
+
+use wikistats;
+CREATE TABLE jan( id INT NOT NULL AUTO_INCREMENT, word VARCHAR(64) NOT NULL, count VARCHAR(64) NOT NULL, primary key(id)) ENGINE=MyISAM;
+INSERT INTO jan VALUES('', $word, $count);
+
+for i in `l`; do python convert.py ${i}part-00042; done
+scp -i ~/.ssh/office916.pem -r data ubuntu@www.explorewikistats.org:

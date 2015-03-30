@@ -1,2 +1,2 @@
-# WikiStats
-WikiStats exploration software http://www.explorewikistats.org/
+# ExploreWikiStats
+Base code for http://www.explorewikistats.org
