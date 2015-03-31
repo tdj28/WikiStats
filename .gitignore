@@ -5,3 +5,7 @@
 venv
 error.log
 .vagrant
+cookbooks
+databags
+roles
+Berksfile.lock
