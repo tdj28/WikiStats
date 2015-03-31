@@ -1,0 +1,7 @@
+DEPENDENCIES
+  wikistats
+    path: .
+    metadata: true
+
+GRAPH
+  wikistats (0.1.0)
