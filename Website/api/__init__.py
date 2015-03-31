@@ -7,9 +7,9 @@ from logging.handlers import RotatingFileHandler
 app = Flask(__name__)
 
 app.secret_key = 'hswPYkqVrneEBRDy9s2xX3RgH7jcHfab'
-handler = RotatingFileHandler('error.log', maxBytes=10000, backupCount=1)
-handler.setLevel(logging.INFO)
-app.logger.addHandler(handler)
+#handler = RotatingFileHandler('error.log', maxBytes=10000, backupCount=1)
+#handler.setLevel(logging.INFO)
+#app.logger.addHandler(handler)
 app.debug = True
 
 mysql = MySQL()
@@ -27,6 +27,7 @@ from api.views.authentication import authentication
 app.register_blueprint(authentication, url_prefix='/auth')
 
 from api.views.welcome import welcome
+from api.views.hits import hitme
 from api.views.apiaccess import apiaccess
 from api.views.login import login
 from api.views.logout import logout
