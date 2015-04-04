@@ -6,12 +6,6 @@ mysql_service 'default' do
     action [:create, :start]
 end
 
-mysql_config 'default' do
-    source 'my.cnf.erb'
-    notifies :restart, 'mysql_service[default]'
-    action :create
-end
-
 mysql_client 'default' do
     action :create
 end
@@ -48,7 +42,7 @@ execute "make_wikistats_db" do
     notifies :restart,
         "service[apache2]"
     notifies :run, "execute[make_data_db]"
-    # chaining them means we only need one not_if that will 
+    # chaining them means we only need one not_if that will
     # cut off that branch of execute
 end
 
