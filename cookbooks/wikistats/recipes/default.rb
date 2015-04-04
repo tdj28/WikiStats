@@ -16,6 +16,10 @@ package "redis-server" do
     action :install
 end
 
-execute "/etc/init.d/redis-server start" do
-    ignore_failure true
+service "redis-server" do
+  action :start
 end
+
+#execute "/etc/init.d/redis-server start" do
+#    ignore_failure true
+#end
