@@ -26,6 +26,18 @@ vagrant plugin install vagrant-omnibus
 vagrant plugin install vagrant-berkshelf
 ```
 
+If you have trouble with berks, you can either point your current paths to the right chef-dk binaries/libs:
+
+```
+eval "$(chef shell-init bash)"
+```
+
+or try uninstalling the gem version:
+
+```
+gem uninstall berkshelf
+```
+
 This deploy has been tested against vagrant 1.7.
 
 ### OpsWorks
