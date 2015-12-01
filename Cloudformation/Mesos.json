@@ -1,0 +1,197 @@
+{
+  "AWSTemplateFormatVersion":"2010-09-09",
+  "Description":"AWS CloudFormation Template for a Mesos Cluster.",
+  "Parameters":{
+    "MesosTyrantInstanceType":{
+      "Description":"EC2 instance type for the master",
+      "Type":"String",
+      "AllowedValues":[
+        "t1.micro", "m1.small", "m3.large", "m3.xlarge", "m3.2xlarge",
+        "c3.large", "c3.xlarge", "c3.2xlarge", "c3.4xlarge", "c3.8xlarge", "hs1.8xlarge"
+      ],
+      "ConstraintDescription":"must be a valid EC2 instance type.",
+      "Default":"m1.small"
+    },
+    "MesosWorkerInstanceType":{
+      "Description":"EC2 instance type for the worker",
+      "Type":"String",
+      "AllowedValues":[
+        "t1.micro", "m1.small", "m3.large", "m3.xlarge", "m3.2xlarge",
+        "c3.large", "c3.xlarge", "c3.2xlarge", "c3.4xlarge", "c3.8xlarge", "hs1.8xlarge"
+      ],
+      "ConstraintDescription":"must be a valid EC2 instance type.",
+      "Default":"m1.small"
+    },
+    "MesosTyrantCount" : {
+      "Description" : "Number of tyrant nodes to launch",
+      "Type" : "Number",
+      "Default" : "1"
+    },
+    "MesosMasterQuorumCount" : {
+      "Description" : "Number of masters needed for Mesos replicated log registry quorum (should be ceiling(<MasterInstanceCount>/2))",
+      "Type" : "Number",
+      "Default" : "1"
+    },
+    "MesosWorkerCount":{
+      "Description":"Number of Mesos workers",
+      "Type":"String",
+      "Default":"2"
+    },
+    "MesosMasterPort":{
+      "Description":"Port for the mesos master (default: 5050).",
+      "Type":"String",
+      "Default":"5050"
+    },
+    "MesosSlavePort":{
+      "Description":"Port for the mesos slave (default: 5051).",
+      "Type":"String",
+      "Default":"5051"
+    },
+    "SparkMasterPort":{
+      "Description":"Port for the Spark master (default: 7077).",
+      "Type":"String",
+      "Default":"7077"
+    },
+    "SparkMasterWebuiPort":{
+      "Description":"Port for the Spark master web UI (default: 8080).",
+      "Type":"String",
+      "Default":"8080"
+    },
+    "SparkWorkerWebuiPort":{
+      "Description":"Port for the Spark worker web UI (default: 8081).",
+      "Type":"String",
+      "Default":"8081"
+    },
+    "SparkWorkerCount":{
+      "Description":"Number of Spark workers",
+      "Type":"String",
+      "Default":"2"
+    },
+    "KeyName":{
+      "Description":"Name of an existing EC2 KeyPair to enable SSH access to the instance",
+      "Type":"String",
+      "MinLength":"1",
+      "MaxLength":"255",
+      "AllowedPattern":"[\\x20-\\x7E]*",
+      "ConstraintDescription":"can contain only ASCII characters.",
+      "Default":"office916"
+    },
+    "AccessControl" : {
+      "Description" : "The IP address range that can be used to access the Spark cluster.",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x.",
+      "Default": "0.0.0.0/0"
+    },
+    "VpcName" : {
+      "Description" : "VPC Name",
+      "Type" : "String",
+      "Default" : "MesosVpc"
+    },
+    "VpcCidrBlock" :{
+      "Description" : "The CIDR block you want the VPC to cover. (default: 10.0.0.0/16).",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x.",      
+      "Default": "10.0.0.0/16"
+    },
+    "PublicSubnetCidrBlock" :{
+      "Description" : "The CIDR block that you want the subnet to cover (edfault: 10.0.0.0/24).",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x.",      
+      "Default": "10.0.0.0/24"      
+    },
+    "MarathonDockerImage" : {
+      "Description" : "The Marathon Docker image (format: 'registry:port/repository:version')",
+      "Type" : "String",
+      "Default" : "thefactory/marathon:0.7.5"
+    },
+    "MarathonLoggerDockerImage" : {
+      "Description" : "The marathon-logger Docker image (format: 'registry:port/repository:version')",
+      "Type" : "String",
+      "Default" : "thefactory/marathon-logger:latest"
+    },
+    "MarathonLoggerEventStore" : {
+      "Description" : "The marathon-logger event store connection string",
+      "Type" : "String",
+      "Default" : "in-memory://localhost/?max_length=100"
+    }
+  },
+  
+  "Mappings":{
+    "RegionMap":{
+      "us-east-1":{ "64":"ami-d05e75b8" },
+      "us-west-1":{ "64":"ami-5189a661"}
+    }
+  },
+  
+  "Resources":{
+    "VPC":{
+      "Type":"AWS::EC2::VPC",
+      "Properties":{
+        "CidrBlock":{ "Ref":"VpcCidrBlock" },
+        "Tags":[
+          { "Key":"Application", "Value":{ "Ref":"AWS::StackId" } },
+          { "Key":"Name", "Value":{ "Ref":"AWS::VpcName" } }
+        ],
+        "EnableDnsSupport":"true",
+        "EnableDnsHostnames":"true"
+      }
+    },
+    "PublicSubnet":{
+      "Type":"AWS::EC2::Subnet",
+      "Properties":{
+        "VpcId":{ "Ref":"VPC" },
+        "CidrBlock":{ "Ref":"PublicSubnetCidrBlock" },
+        "Tags":[
+          { "Key":"Application", "Value":{ "Ref":"AWS::StackId" } }
+        ]
+      }
+    },
+    "InternetGateway":{
+      "Type":"AWS::EC2::InternetGateway",
+      "Properties":{
+        "Tags":[
+          { "Key":"Application", "Value":{ "Ref":"AWS::StackId" } }
+        ]
+      }
+    },
+    "AttachGateway":{
+      "Type":"AWS::EC2::VPCGatewayAttachment",
+      "Properties":{
+        "VpcId":{ "Ref":"VPC" },
+        "InternetGatewayId":{ "Ref":"InternetGateway" }
+      }
+    },
+    "PublicRouteTable":{
+      "Type":"AWS::EC2::RouteTable",
+      "Properties":{
+        "VpcId":{ "Ref":"VPC" },
+        "Tags":[
+          { "Key":"Application", "Value":{ "Ref":"AWS::StackId" } }
+        ]
+      }
+    },
+    "PublicRoute":{
+      "Type":"AWS::EC2::Route",
+      "DependsOn":"AttachGateway",
+      "Properties":{
+        "RouteTableId":{ "Ref":"PublicRouteTable" },
+        "DestinationCidrBlock":"0.0.0.0/0",
+        "GatewayId":{ "Ref":"InternetGateway" }
+      }
+    },
+    "PublicSubnetRouteTableAssociation":{
+      "Type":"AWS::EC2::SubnetRouteTableAssociation",
+      "Properties":{
+        "SubnetId":{ "Ref":"PublicSubnet" },
+        "RouteTableId":{ "Ref":"PublicRouteTable" }
+      }
+    },
